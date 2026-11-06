@@ -16,6 +16,14 @@ You must have:
 
 When you use the full name `vois-so/tap/vois-studio`, Homebrew adds this tap and trusts the cask. Then open Vois Studio in the `/Applications` folder.
 
+## Vois Studio is on your Mac already
+
+If you installed Vois Studio from the website, Homebrew stops with "It seems there is already an App". To let Homebrew manage that copy, use this command. Your voices, scripts and settings do not change.
+
+```bash
+brew install --cask --adopt vois-so/tap/vois-studio
+```
+
 ## Update Vois Studio
 
 Vois Studio updates itself. When a new version is available, the app tells you.
