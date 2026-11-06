@@ -1,0 +1,56 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-checks:
+    uses: vois-so/.github/.github/workflows/public-checks.yml@main
+
+  bump-script:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: ShellCheck
+        run: shellcheck scripts/bump-cask.sh
+
+  cask:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      # Checks out this repository as the vois-so/tap tap and trusts it.
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
+
+      - name: brew style
+        run: brew style vois-so/tap
+
+      - name: brew audit
+        run: brew audit --cask --strict --online vois-so/tap/vois-studio
+
+      - name: brew install
+        run: brew install --cask vois-so/tap/vois-studio
+
+      - name: Check the installed app
+        run: |
+          set -euo pipefail
+          app=/Applications/Vois.app
+          expected="$(brew info --cask --json=v2 vois-so/tap/vois-studio | jq -r '.casks[0].version')"
+          actual="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Contents/Info.plist")"
+          test "$actual" = "$expected" || { echo "::error::Vois.app is $actual, the cask is $expected"; exit 1; }
+          codesign --verify --deep --strict "$app"
+          spctl --assess --type execute --verbose=2 "$app"
+
+      - name: brew uninstall
+        run: |
+          brew uninstall --cask vois-so/tap/vois-studio
+          test ! -e /Applications/Vois.app
