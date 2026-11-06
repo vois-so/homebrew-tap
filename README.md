@@ -61,7 +61,15 @@ scripts/bump-cask.sh
 
 The script gets the version from the production update manifest. To use a different version, add the version to the command, for example `scripts/bump-cask.sh 2.6.3`.
 
-The script downloads the DMG and calculates its SHA-256. Before it changes the cask, it examines Vois.app in the DMG. It checks the bundle identifier, the version, the code signature, the Developer ID team and the notarization. The script does not commit or push.
+The script downloads the DMG and calculates its SHA-256. Before it changes the cask, it examines these items of Vois.app in the DMG:
+
+- The bundle identifier.
+- The version.
+- The code signature.
+- The Developer ID team.
+- The notarization.
+
+The script does not commit or push.
 
 For each change to this repository, the `checks` workflow does these steps:
 
