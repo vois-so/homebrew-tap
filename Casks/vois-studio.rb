@@ -1,6 +1,6 @@
 cask "vois-studio" do
-  version "2.6.2"
-  sha256 "27d994698a15e786861797990f9d094dae7181e146c310199da3d37361dfb9a5"
+  version "2.6.3"
+  sha256 "3f5e853bd255aa2c5c2f816a02c38be36ce8fa69d09421698a4bde13c3f31142"
 
   url "https://cdn.vois.so/releases/production/v#{version}/Vois_#{version}_aarch64.dmg"
   name "Vois Studio"
